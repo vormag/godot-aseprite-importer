@@ -48,7 +48,7 @@ func _ready() -> void:
 
 You can stack multiple `AnimatedSprite2D` on top of one another. This is especially useful if you want to control different colthing/items, and show/hide them depending on what is selected. You will need to synchronize in this case either through `Timer` or `frame_changed` signal.
 
-```gscript
+```gdscript
 extends Node2D
 
 @export var ase: AsepriteAnimation
