@@ -1,4 +1,5 @@
 @icon("res://addons/aseprite_importer/icon/aseprite_animation.svg")
+@tool
 extends Resource
 
 class_name AsepriteAnimation
