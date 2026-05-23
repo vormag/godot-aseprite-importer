@@ -21,20 +21,25 @@ func _get_import_options(path: String, preset_index: int) -> Array[Dictionary]:
 		{
 			"name": "import_with_layers",
 			"default_value": false
+		},
+		{
+			"name": "import_as_plain_texture",
+			"default_value": false
 		}
 	]
 
 func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	var document: AsepriteDocument = AsepriteParser.parse(source_file)
 	var import_with_layers: bool = bool(options.get("import_with_layers", false))
-	var texture: Texture2D = _build_single_frame_texture(document, import_with_layers)
+	var import_as_plain_texture: bool = bool(options.get("import_as_plain_texture", false))
+	var texture: Texture2D = _build_single_frame_texture(document, import_with_layers, import_as_plain_texture)
 	if texture != null:
 		return ResourceSaver.save(texture, "%s.%s" % [save_path, _get_save_extension()])
 
 	var animation: AsepriteAnimation = _build_animation(document)
 	return ResourceSaver.save(animation, "%s.%s" % [save_path, _get_save_extension()])
 
-func _build_single_frame_texture(document: AsepriteDocument, import_with_layers: bool) -> Texture2D:
+func _build_single_frame_texture(document: AsepriteDocument, import_with_layers: bool, import_as_plain_texture: bool) -> Texture2D:
 	var layers: Array = document.get_unique_layer_names()
 	var layer_names: Array[String] = []
 	var image_frame_count: int = 0
@@ -83,8 +88,12 @@ func _build_single_frame_texture(document: AsepriteDocument, import_with_layers:
 			Vector2i.ZERO
 		)
 
+	var merged_texture: Texture2D = ImageTexture.create_from_image(merged_image)
+	if import_as_plain_texture:
+		return merged_texture
+
 	var texture: AsepriteTexture2D = AsepriteTexture2D.new()
-	texture.texture = ImageTexture.create_from_image(merged_image)
+	texture.texture = merged_texture
 	if import_with_layers:
 		texture.layer_names = layer_names
 		for layer_name: String in layer_names:
