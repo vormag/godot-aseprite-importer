@@ -17,5 +17,8 @@ var frame_durations: Array
 @export
 var frame_positions: Dictionary
 
+func has_textures(layer: String, animation: String) -> bool:
+	return textures.has("%s/%s" % [layer, animation])
+
 func get_textures(layer, animation) -> Array:
 	return textures["%s/%s" % [layer, animation]]
